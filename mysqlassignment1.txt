@@ -1,0 +1,287 @@
+ use assignment_1;
+Database changed
+mysql> show tables;
++------------------------+
+| Tables_in_assignment_1 |
++------------------------+
+| account                |
+| branch                 |
+| customer               |
+| customer_phone         |
+| holds                  |
++------------------------+
+5 rows in set (0.11 sec)
+
+mysql> select * from account;
++------------+---------+---------+-----------+
+| account_no | balance | type    | Branch_id |
++------------+---------+---------+-----------+
+|   12345678 |   40000 | savings |         1 |
+|   45871423 |   70000 | saving  |         3 |
+|   54875213 |   80000 | current |         4 |
+|   87123456 |   60000 | current |         3 |
+|   87654321 |   50000 | savings |         2 |
++------------+---------+---------+-----------+
+5 rows in set (0.04 sec)
+
+mysql> select * from branch;
++-----------+----------------+
+| Branch_id | Branch_Address |
++-----------+----------------+
+|         1 | andheri        |
+|         2 | mumbai         |
+|         3 | malad          |
+|         4 | virar          |
+|         5 | bandra         |
++-----------+----------------+
+5 rows in set (0.03 sec)
+
+mysql> select * from customer;
++---------+--------+----------+
+| Cust_id | cname  | Caddress |
++---------+--------+----------+
+|       1 | vikas  | pune     |
+|       2 | sagar  | mumbai   |
+|       3 | mahesh | solapur  |
+|       4 | raju   | akkalkot |
+|       5 | ashish | bhosari  |
++---------+--------+----------+
+5 rows in set (0.00 sec)
+
+mysql> select * from customer_phone;
++---------+----------+
+| cust_id | phone_no |
++---------+----------+
+|       1 |   954587 |
+|       2 |   841285 |
+|       3 |   788457 |
+|       4 |   989060 |
+|       5 |   985023 |
++---------+----------+
+5 rows in set (0.00 sec)
+
+mysql> select * from holds;
++------------+-------------+
+| Account_no | customer_id |
++------------+-------------+
+|   12345678 |           1 |
+|   45678123 |           4 |
+|   65487321 |           3 |
+|   74185263 |           5 |
+|   87654321 |           1 |
++------------+-------------+
+5 rows in set (0.02 sec)
+
+mysql>
+1. Find the Max, Min, Avg balances of each branch
+ select max(balance) from account where Branch_id=(select Branch_id from branch where  Branch_Address='andheri');
++--------------+
+| max(balance) |
++--------------+
+|        40000 |
++--------------+
+1 row in set (0.04 sec)
+
+mysql> select max(balance) from account where Branch_id=(select Branch_id from branch where  Branch_Address='bandra');
++--------------+
+| max(balance) |
++--------------+
+|         NULL |
++--------------+
+1 row in set (0.00 sec)
+
+mysql> select max(balance) from account where Branch_id=(select Branch_id from branch where  Branch_Address='malad');
++--------------+
+| max(balance) |
++--------------+
+|        70000 |
++--------------+
+1 row in set (0.00 sec)
+
+mysql> select max(balance) from account where Branch_id=(select Branch_id from branch where  Branch_Address='mumbai');
++--------------+
+| max(balance) |
++--------------+
+|        50000 |
++--------------+
+1 row in set (0.00 sec)
+
+mysql> select max(balance) from account where Branch_id=(select Branch_id from branch where  Branch_Address='virar');
++--------------+
+| max(balance) |
++--------------+
+|        80000 |
++--------------+
+1 row in set (0.00 sec)
+
+MIN->>>>>>>>>>>>>>>>>>
+ select min(balance) from account where Branch_id=(select Branch_id from branch where  Branch_Address='virar');
++--------------+
+| min(balance) |
++--------------+
+|        80000 |
++--------------+
+1 row in set (0.00 sec)
+
+mysql> select min(balance) from account where Branch_id=(select Branch_id from branch where  Branch_Address='mumbai');
++--------------+
+| min(balance) |
++--------------+
+|        50000 |
++--------------+
+1 row in set (0.00 sec)
+
+mysql> select min(balance) from account where Branch_id=(select Branch_id from branch where  Branch_Address='malad');
++--------------+
+| min(balance) |
++--------------+
+|        60000 |
++--------------+
+1 row in set (0.00 sec)
+
+AVG->>>>>>>>>>>>>>>>>>>>>>>>>>
+ select avg(balance) from account where Branch_id=(select Branch_id from branch where  Branch_Address='virar');
++--------------+
+| avg(balance) |
++--------------+
+|   80000.0000 |
++--------------+
+1 row in set (0.00 sec)
+
+mysql> select avg(balance) from account where Branch_id=(select Branch_id from branch where  Branch_Address='Bandra');
++--------------+
+| avg(balance) |
++--------------+
+|         NULL |
++--------------+
+1 row in set (0.00 sec)
+
+mysql> select avg(balance) from account where Branch_id=(select Branch_id from branch where  Branch_Address='bandra');
++--------------+
+| avg(balance) |
++--------------+
+|         NULL |
++--------------+
+1 row in set (0.00 sec)
+
+
+2. Find total number of accounts in each branch
+select count(balance) from account where Branch_id=(select Branch_id from branch where  Branch_Address='bandra');
++----------------+
+| count(balance) |
++----------------+
+|              0 |
++----------------+
+1 row in set (0.03 sec)
+
+mysql> select count(balance) from account where Branch_id=(select Branch_id from branch where  Branch_Address='mumbai');
++----------------+
+| count(balance) |
++----------------+
+|              1 |
++----------------+
+1 row in set (0.00 sec)
+
+mysql> select count(balance) from account where Branch_id=(select Branch_id from branch where  Branch_Address='virar');
++----------------+
+| count(balance) |
++----------------+
+|              1 |
++----------------+
+1 row in set (0.00 sec)
+
+mysql> select count(balance) from account where Branch_id=(select Branch_id from branch where  Branch_Address='malad');
++----------------+
+| count(balance) |
++----------------+
+|              2 |
++----------------+
+1 row in set (0.00 sec)
+
+mysql>
+3. Find total number of accounts of each type in each branch
+SELECT(SELECT Branch_Address FROM branch WHERE Branch_id = a.Branch_id) AS Branch_Address,a.type,(SELECT COUNT(*) FROM account a2 WHERE a2.Branch_id = a.Branch_id AND a2.type = a.type) AS Total_accounts FROM account a;
++----------------+---------+----------------+
+| Branch_Address | type    | Total_accounts |
++----------------+---------+----------------+
+| andheri        | savings |              1 |
+| malad          | saving  |              1 |
+| virar          | current |              1 |
+| malad          | current |              1 |
+| mumbai         | savings |              1 |
++----------------+---------+----------------+
+5 rows in set (0.02 sec)
+
+4. Find branch_no having an average balance >= 2000
+ SELECT DISTINCT Branch_id FROM account WHERE (SELECT AVG(balance)FROM account AS a WHERE a.Branch_id = account.Branch_id) >= 2000;
++-----------+
+| Branch_id |
++-----------+
+|         1 |
+|         3 |
+|         4 |
+|         2 |
++-----------+
+4 rows in set (0.09 sec)
+
+5. Find customer names having account with mumbai branch.
+ SELECT cname FROM customer WHERE cust_id IN (SELECT cust_id FROM holds WHERE Account_no IN (SELECT Account_no FROM Account WHERE Branch_id = (SELECT Branch_id FROM branch WHERE Branch_Address = 'mumbai')));
++--------+
+| cname  |
++--------+
+| vikas  |
+| sagar  |
+| mahesh |
+| raju   |
+| ashish |
++--------+
+
+6.  Find customer name having highest balance.
+SELECT cname FROM customer WHERE cust_id = (SELECT cust_id FROM holds WHERE account_no = ( SELECT account_no FROM account WHER
+E balance = (SELECT MAX(balance) FROM account)));
+Empty set (0.04 sec)
+
+7. Find customer id’s having bal greater than avg bal of the branch to which the account belongs to manchar branch.
+SELECT cust_id FROM holds WHERE acc_no IN (SELECT acc_noFROM account WHERE branch_id = (SELECT branch_id FROM branch WHERE branch_addr = 'Manchar')) AND balance > (SELECT AVG(balance) FROM account WHERE branch_id = (SELECT branch_id FROM branch WHERE branch_addr = 'Manchar'));
+8.  Find customer details and their account details i.e. CustId, CustName, AccNo and Bal THEY HOLD
+SELECT c.cust_id, c.cname,(SELECT h.acc_no FROM holds h WHERE h.cust_id = c.cust_id) AS AccNo,(SELECT a.balance FROM account a WHERE a.acc_no = (SELECT h.acc_no FROM holds h WHERE h.cust_id = c.cust_id)) AS Balance FROM customer c;
+
+
+9.  Find customer names having more than 1 account.
+SELECT cname FROM customer WHERE (SELECT COUNT(*)FROM holds AS h WHERE h.cust_id = customer.cust_id) > 1;
+
+10.  Find customer id’s having avg bal >= 2000.
+ SELECT customer_id FROM holds WHERE customer_id IN (SELECT DISTINCT customer_id FROM holds WHERE Account_no IN (SELECT account_no FROM account WHERE balance >= 2000));
++-------------+
+| customer_id |
++-------------+
+|           1 |
+|           1 |
++-------------+
+11.  Find accounts belonging to more than 1 customer.
+SELECT DISTINCT Account_no FROM holds h1 WHERE (SELECT COUNT(*)FROM holds h2 WHERE h2.Account_no = h1.Account_no)> 1;
+Empty set (0.00 sec)
+
+12.  Find customers having only 1 type of account
+SELECT c.cust_id, c.cname FROM customer c WHERE (SELECT COUNT(DISTINCT a.type)FROM account a WHERE a.acc_no IN (SELECT h.acc_no FROM holds h WHERE h.cust_id = c.cust_id)) = 1;
+
+13. Find CustId, CustName, Phone_No, AccNo, Bal, BNO, Bracnh_Addr of accounts. Note if a customer does not have a phone number, still the details of the account should be displayed
+
+14 Find customer names having account in branches having same location as the customer address
+SELECT cname FROM customer WHERE c.cust_id IN (SELECT h.cust_id FROM holds h WHERE h.acc_no IN (SELECT a.acc_no FROM account a WHERE a.branch_id IN (SELECT b.branch_id FROM branch b WHERE b.branch_addr = c.caddr)));
+
+15. Find customer id’s having max balance in each branch.
+SELECT h.cust_id FROM holds h WHERE h.acc_no IN (SELECT a.acc_no FROM account a WHERE a.branch_id = (SELECT b.branch_id FROM branch b WHERE (SELECT MAX(balance) FROM account a2 WHERE a2.branch_id = b.branch_id) = a.balance));
+
+17. Find customer names having a total balance > 50,000
+SELECT cname FROM customer WHERE cust_id IN (SELECT h.cust_id FROM holds h WHERE h.acc_no IN (SELECT a.acc_no FROM account a WHERE a.balance > 50000));
+
+19. Find customers having account at every branch
+SELECT cust_id, cname FROM customer c WHERE NOT EXISTS (SELECT branch_id FROM branch WHERE branch_id NOT IN (SELECT a.branch_id FROM account a WHERE a.acc_no IN (SELECT h.acc_no FROM holds h WHERE h.cust_id = c.cust_id)));
+
+20. Find Customers having all types of account
+SELECT c.cust_id, c.cname FROM customer c WHERE (SELECT COUNT(DISTINCT a.type) FROM account a WHERE a.acc_no IN (SELECT h.acc_no FROM holds h WHERE h.cust_id = c.cust_id)) = 2;
+
+21. Find customers having all types of account at the same branch
+SELECT c.cust_id, c.cname FROM customer c WHERE (SELECT COUNT(DISTINCT a.type) FROM account a WHERE a.branch_id = (SELECT a2.branch_id FROM account a2 WHERE a2.acc_no IN ( SELECT h.acc_no FROM holds h WHERE h.cust_id = c.cust_id)LIMIT 1)) = 2;
+
